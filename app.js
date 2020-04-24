@@ -25,20 +25,27 @@ app.get('/heroes', function (req, res) {
 app.post('/heroes', function (req, res) {
     let body = req.body;
     let banAmount = 0;
+    let errorMessage = {};
 
-    body.forEach(element => {
-        if (element["status"] === "banned") {
-            banAmount++;
+    if (body.length === 8) {
+        body.forEach(element => {
+            if (element["status"] === "banned") {
+                banAmount++;
+            }
+        });
+    
+        if (banAmount === 2) {
+            res.send(200);
+        } else {
+            errorMessage["Message"] = "You must ban two (2) heroes!";
+            // res.status(400).send({ Message: "You must ban two (2) heroes!"});
         }
-    });
+        // res.send(banAmount.toString());
+    } else {
+        errorMessage["Message"] = "The party must consist of eight (8) members!";
+    }
 
-    if (banAmount === 2) {
-        res.send(200);
-    }
-    else {
-        res.status(400).send({ Message: "You must ban two (2) heroes!"});
-    }
-    // res.send(banAmount.toString());
+    res.status(400).send(errorMessage);
 });
 
 app.listen(3000, function () {
