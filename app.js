@@ -46,8 +46,10 @@ function submitHeroes(req, res) {
         console.log("banned heroes: " + bannedHeroes);
         console.log("hidden heroes: " + hiddenHeroes);
         if (bannedHeroes === 2 && hiddenHeroes === 2) {
-            let length = save(body);
-            res.status(200).send(length.toString());
+            if (save(body) > 0) 
+                res.status(200).send(length.toString());
+            else
+                res.status(400).send("Data could not be saved!");
         } else {
             res.status(400).send("You must ban two (2) heroes!");
         }
@@ -80,7 +82,6 @@ function save(heroes) {
     //read file
     let data = fs.readFileSync(file, 'utf8');
     let heroesList = data.length > 0 ? JSON.parse(data) : [];
-    
     console.log(heroesList);
     heroesList.push(heroes);
 
